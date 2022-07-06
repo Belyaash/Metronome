@@ -3,13 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Metronome"
+        xmlns:local="clr-namespace:Metronome.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="200" Width="300"
         MinHeight="200" MaxHeight="200"
         MinWidth="300" MaxWidth ="300"
         Background="#D7FDEC">
 
+    <Window.DataContext>
+        <local:MainWindowViewModel></local:MainWindowViewModel>
+    </Window.DataContext>
     <Window.Resources>
         <Style x:Key="CurrentTact" TargetType="TextBox">
             <Style.Triggers>
@@ -59,13 +62,13 @@
                            Margin="0 0 70 0"/>
                 <TextBox Width="50" FontSize="20"
                          HorizontalAlignment="Right"
-                         Text="{Binding BPM, 
+                         Text="{Binding Bpm, 
                     UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="20 0 0 10">
                 <TextBlock Text="Measure:" FontSize="20"
-                           Margin="0 0 56 0"></TextBlock>
+                           Margin="0 0 34 0"></TextBlock>
                 <ComboBox ItemsSource="{Binding MeasuresList}"
                           SelectedItem="{Binding CurrentMeasure,
                     UpdateSourceTrigger=PropertyChanged}"
@@ -78,13 +81,19 @@
                 Background="White"
                 BorderBrush="Black"
                 BorderThickness="2">
-            <TextBlock Text="">
+            <TextBlock Text="{Binding CurrentFaze,
+                UpdateSourceTrigger=PropertyChanged}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontSize="40">
 
             </TextBlock>
         </Border>
 
         <Button Grid.Row="1" Grid.Column="0"
                 Height="50" Width="100"
-                HorizontalAlignment="Right"></Button>
+                HorizontalAlignment="Right"
+                Content="Start/Stop"
+                Command="{Binding StartStopCommand}"></Button>
     </Grid>
 </Window>
