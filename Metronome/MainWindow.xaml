@@ -62,7 +62,7 @@
                            Margin="0 0 70 0"/>
                 <TextBox Width="50" FontSize="20"
                          HorizontalAlignment="Right"
-                         Text="{Binding Bpm, 
+                         Text="{Binding Metronome.Bpm, 
                     UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
@@ -70,7 +70,7 @@
                 <TextBlock Text="Measure:" FontSize="20"
                            Margin="0 0 34 0"></TextBlock>
                 <ComboBox ItemsSource="{Binding MeasuresList}"
-                          SelectedItem="{Binding CurrentMeasure,
+                          SelectedItem="{Binding Metronome.CurrentMeasure,
                     UpdateSourceTrigger=PropertyChanged}"
                           HorizontalAlignment="Right"></ComboBox>
             </StackPanel>
@@ -81,7 +81,7 @@
                 Background="White"
                 BorderBrush="Black"
                 BorderThickness="2">
-            <TextBlock Text="{Binding CurrentFaze,
+            <TextBlock Text="{Binding Metronome.CurrentFaze,
                 UpdateSourceTrigger=PropertyChanged}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
