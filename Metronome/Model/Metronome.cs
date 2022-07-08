@@ -6,6 +6,7 @@ using System.Media;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using Metronome.Annotations;
 
 namespace Metronome.Model;
@@ -16,7 +17,14 @@ public class Metronome : INotifyPropertyChanged
         this.Bpm = bpm;
         this.CurrentMeasure = currentMeasure;
         this.CurrentFaze = 0;
+        this.IsWorking = false;
+        timer.AutoReset = true;
+        timer.Enabled = false;
+        timer.Elapsed += MetronomeWork;
     }
+
+    private Timer timer = new();
+
     private int _bpm;
 
     public int Bpm
@@ -30,6 +38,7 @@ public class Metronome : INotifyPropertyChanged
                 _bpm = 300;
             else
                 _bpm = value;
+            timer.Interval = 60000 / _bpm;
             OnPropertyChanged("Bpm");
         }
     }
@@ -41,7 +50,7 @@ public class Metronome : INotifyPropertyChanged
         get => _currentFaze;
         internal set
         {
-            _currentFaze = value;
+            _currentFaze = value > CurrentMeasure ? 1 : value;
             OnPropertyChanged("CurrentFaze");
         }
     }
@@ -58,18 +67,25 @@ public class Metronome : INotifyPropertyChanged
         }
     }
 
-    public static void MetronomeWorkForTimer(object obj)
-    {
-        Metronome ms = obj as Metronome;
-        ms.MetronomeWork();
-    }
-    public void MetronomeWork()
-    {
-        if (CurrentMeasure == CurrentFaze)
-            CurrentFaze = 1;
-        else
-            CurrentFaze++;
+    private bool _isWorking;
 
+    public bool IsWorking
+    {
+        get => _isWorking;
+        set
+        {
+            _isWorking = value;
+
+            if (value)
+                timer.Start();
+            else 
+                timer.Stop();
+        }
+    }
+
+    public void MetronomeWork(object source, ElapsedEventArgs e)
+    {
+        CurrentFaze++;
         if (CurrentFaze == 1)
         {
             SystemSounds.Beep.Play();

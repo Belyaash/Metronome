@@ -37,8 +37,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     void ExecuteToStartStop(object param)
     {
-        TimerCallback tc = new TimerCallback(Model.Metronome.MetronomeWorkForTimer);
-        Timer timer = new Timer(tc, Metronome, 0, 60000/Metronome.Bpm);
+        Metronome.IsWorking = !Metronome.IsWorking;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
