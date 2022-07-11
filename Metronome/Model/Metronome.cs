@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
+using System.Windows.Media;
 using Metronome.Annotations;
 
 namespace Metronome.Model;
@@ -18,12 +20,12 @@ public class Metronome : INotifyPropertyChanged
         this.CurrentMeasure = currentMeasure;
         this.CurrentFaze = 0;
         this.IsWorking = false;
-        timer.AutoReset = true;
-        timer.Enabled = false;
-        timer.Elapsed += MetronomeWork;
+        _timer.AutoReset = true;
+        _timer.Enabled = false;
+        _timer.Elapsed += MetronomeWork;
     }
 
-    private Timer timer = new();
+    private Timer _timer = new();
 
     private int _bpm;
 
@@ -38,7 +40,7 @@ public class Metronome : INotifyPropertyChanged
                 _bpm = 300;
             else
                 _bpm = value;
-            timer.Interval = 60000 / _bpm;
+            _timer.Interval = 60000 / _bpm;
             OnPropertyChanged("Bpm");
         }
     }
@@ -77,22 +79,25 @@ public class Metronome : INotifyPropertyChanged
             _isWorking = value;
 
             if (value)
-                timer.Start();
+                _timer.Start();
             else 
-                timer.Stop();
+                _timer.Stop();
         }
     }
 
     public void MetronomeWork(object source, ElapsedEventArgs e)
     {
-        CurrentFaze++;
+        SoundPlayer player;
+         CurrentFaze++;
         if (CurrentFaze == 1)
         {
-            SystemSounds.Beep.Play();
+            player = new SoundPlayer(Properties.Resources.HighMetronomeSound);
+            player.Play();
         }
         else
         {
-            SystemSounds.Hand.Play();
+            player = new SoundPlayer(Properties.Resources.LowMetronomeSound);
+            player.Play();
         }
     }
 

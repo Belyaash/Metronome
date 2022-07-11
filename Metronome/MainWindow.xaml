@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Metronome.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="200" Width="300"
+        Title="Metronome" Height="200" Width="300"
         MinHeight="200" MaxHeight="200"
         MinWidth="300" MaxWidth ="300"
         Background="#D7FDEC">
