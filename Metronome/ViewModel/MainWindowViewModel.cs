@@ -7,28 +7,27 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Metronome.Model;
+using Metronome.Model.Interfaces;
 using oLeg_Company_App;
 
 namespace Metronome.ViewModel;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
+
+    public IMetronome Metronome { get; }  
+
+    public List<int> MeasuresList { get; }
+
     public MainWindowViewModel()
     {
         InitCommands();
         Metronome = new Model.Metronome(90, 2);
         MeasuresList = new List<int>();
-        for (int i = 2; i <= 8; i++)
+        for (int i = 1; i <= 8; i++)
         {
             MeasuresList.Add(i);
         }
     }
-    
-
-    public Model.Metronome Metronome { get; }  
-
-    public List<int> MeasuresList { get; }
-
 
     private void InitCommands()
     {
@@ -37,9 +36,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public IDelegateCommand StartStopCommand { private set; get; }
 
-    void ExecuteToStartStop(object param)
+    private void ExecuteToStartStop(object param)
     {
-        Metronome.IsWorking = !Metronome.IsWorking;
+        Metronome.StartOrStopMetronome();
     }
 
 

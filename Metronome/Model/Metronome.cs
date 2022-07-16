@@ -10,106 +10,87 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using Metronome.Annotations;
+using Metronome.Model.Interfaces;
 
 namespace Metronome.Model;
-public class Metronome : INotifyPropertyChanged
+public class Metronome : INotifyPropertyChanged, IMetronome
 {
-    public Metronome(int bpm, int currentMeasure)
-    {
-        this.Bpm = bpm;
-        this.CurrentMeasure = currentMeasure;
-        this.CurrentFaze = 0;
-        this.IsWorking = false;
-        _timer.AutoReset = true;
-        _timer.Enabled = false;
-        _timer.Elapsed += MetronomeWork;
-    }
-
     #region Variables
 
     private readonly Timer _timer = new();
 
+    private bool _isWorking;
 
     private int _bpm;
-
     public int Bpm
     {
         get => _bpm;
         set
         {
-            _bpm = value switch
-            {
-                < 1 => 1,
-                > 300 => 300,
-                _ => value
-            };
-            UpdateTimerInterval();
-            OnPropertyChanged("Bpm");
+            SetBpmInRange(value);
+            SetTimerInterval();
+            OnPropertyChanged(nameof(Bpm));
         }
     }
 
-    private void UpdateTimerInterval()
+    private void SetBpmInRange(int value)
+    {
+        _bpm = value switch
+        {
+            < 1 => 1,
+            > 300 => 300,
+            _ => value
+        };
+    }
+
+    private void SetTimerInterval()
     {
         const int millisecondsInMinute = 60000;
         _timer.Interval = (double)millisecondsInMinute/Bpm;
     }
 
-
-    private int _currentFaze;
-
-    public int CurrentFaze
-    {
-        get => _currentFaze;
-        internal set
-        {
-            _currentFaze = value > CurrentMeasure ? 1 : value;
-            OnPropertyChanged("CurrentFaze");
-        }
-    }
-
-
     private int _currentMeasure;
-
     public int CurrentMeasure
     {
         get => _currentMeasure;
         set
         {
             _currentMeasure = value;
-            OnPropertyChanged("CurrentMeasure");
+            OnPropertyChanged(nameof(CurrentMeasure));
         }
     }
 
-
-    private bool _isWorking;
-
-    public bool IsWorking
+    private int _currentFaze;
+    public int CurrentFaze
     {
-        get => _isWorking;
-        set
+        get => _currentFaze;
+        private set
         {
-            _isWorking = value;
-            StartOrStopTimer(value);
+            _currentFaze = value > CurrentMeasure ? 1 : value;
+            OnPropertyChanged(nameof(CurrentFaze));
         }
-    }
-
-    private void StartOrStopTimer(bool value)
-    {
-        if (value)
-            _timer.Start();
-        else
-            _timer.Stop();
     }
 
     #endregion
 
-    private void MetronomeWork(object source, ElapsedEventArgs e)
+    public Metronome(int bpm, int currentMeasure)
     {
-        CurrentFaze++;
-        SelectSoundAndPlay();
+        Bpm = bpm;
+        CurrentMeasure = currentMeasure;
+        CurrentFaze = 0;
+        _isWorking = false;
+        _timer.AutoReset = true;
+        _timer.Enabled = false;
+        _timer.Elapsed += MetronomeWork;
     }
 
-    private void SelectSoundAndPlay()
+    private void MetronomeWork(object? source, ElapsedEventArgs e)
+    {
+        CurrentFaze++;
+        CreatePlayerAndPlay();
+    }
+
+    private void CreatePlayerAndPlay()
     {
         var player = CreatePlayerByCurrentFaze();
         player.Play();
@@ -121,6 +102,21 @@ public class Metronome : INotifyPropertyChanged
             ? new SoundPlayer(Properties.Resources.HighMetronomeSound)
             : new SoundPlayer(Properties.Resources.LowMetronomeSound);
         return player;
+    }
+
+
+    public void StartOrStopMetronome()
+    {
+        _isWorking = !_isWorking;
+        StartOrStopTimer(_isWorking);
+    }
+
+    private void StartOrStopTimer(bool value)
+    {
+        if (value)
+            _timer.Start();
+        else
+            _timer.Stop();
     }
 
 
