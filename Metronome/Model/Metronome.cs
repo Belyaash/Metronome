@@ -25,7 +25,10 @@ public class Metronome : INotifyPropertyChanged
         _timer.Elapsed += MetronomeWork;
     }
 
+    #region Variables
+
     private readonly Timer _timer = new();
+
 
     private int _bpm;
 
@@ -34,16 +37,23 @@ public class Metronome : INotifyPropertyChanged
         get => _bpm;
         set
         {
-            if (value < 1)
-                _bpm = 1;
-            else if (value > 300)
-                _bpm = 300;
-            else
-                _bpm = value;
-            _timer.Interval = 60000 / _bpm;
+            _bpm = value switch
+            {
+                < 1 => 1,
+                > 300 => 300,
+                _ => value
+            };
+            UpdateTimerInterval();
             OnPropertyChanged("Bpm");
         }
     }
+
+    private void UpdateTimerInterval()
+    {
+        int millisecondsInMinute = 60000;
+        _timer.Interval = (double)millisecondsInMinute / _bpm;
+    }
+
 
     private int _currentFaze;
 
@@ -57,6 +67,7 @@ public class Metronome : INotifyPropertyChanged
         }
     }
 
+
     private int _currentMeasure;
 
     public int CurrentMeasure
@@ -69,6 +80,7 @@ public class Metronome : INotifyPropertyChanged
         }
     }
 
+
     private bool _isWorking;
 
     public bool IsWorking
@@ -77,21 +89,40 @@ public class Metronome : INotifyPropertyChanged
         set
         {
             _isWorking = value;
-
-            if (value)
-                _timer.Start();
-            else 
-                _timer.Stop();
+            StartOrStopTimer(value);
         }
     }
+
+    private void StartOrStopTimer(bool value)
+    {
+        if (value)
+            _timer.Start();
+        else
+            _timer.Stop();
+    }
+
+    #endregion
 
     private void MetronomeWork(object source, ElapsedEventArgs e)
     {
         CurrentFaze++;
-        SoundPlayer player = CurrentFaze == 1 ? new SoundPlayer(Properties.Resources.HighMetronomeSound) 
-            : new SoundPlayer(Properties.Resources.LowMetronomeSound);
+        SelectSoundAndPlay();
+    }
+
+    private void SelectSoundAndPlay()
+    {
+        var player = SelectSoundForPlayer();
         player.Play();
     }
+
+    private SoundPlayer SelectSoundForPlayer()
+    {
+        var player = CurrentFaze == 1
+            ? new SoundPlayer(Properties.Resources.HighMetronomeSound)
+            : new SoundPlayer(Properties.Resources.LowMetronomeSound);
+        return player;
+    }
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

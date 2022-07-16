@@ -24,21 +24,24 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public Model.Metronome Metronome { get; set; }  
+
+    public Model.Metronome Metronome { get; }  
 
     public List<int> MeasuresList { get; }
+
 
     private void InitCommands()
     {
         this.StartStopCommand = new DelegateCommand(ExecuteToStartStop);
     }
 
-    public IDelegateCommand StartStopCommand { protected set; get; }
+    public IDelegateCommand StartStopCommand { private set; get; }
 
     void ExecuteToStartStop(object param)
     {
         Metronome.IsWorking = !Metronome.IsWorking;
     }
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
