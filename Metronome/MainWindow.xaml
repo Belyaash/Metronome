@@ -63,7 +63,8 @@
                 <TextBox Width="50" FontSize="20"
                          HorizontalAlignment="Right"
                          Text="{Binding Metronome.Bpm, 
-                    UpdateSourceTrigger=PropertyChanged}"/>
+                    UpdateSourceTrigger=PropertyChanged}"
+                         PreviewTextInput="NumberValidationTextBox"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="20 0 0 10">

@@ -51,7 +51,7 @@ public class Metronome : INotifyPropertyChanged
     private void UpdateTimerInterval()
     {
         const int millisecondsInMinute = 60000;
-        _timer.Interval = (double)millisecondsInMinute / _bpm;
+        _timer.Interval = (double)millisecondsInMinute/Bpm;
     }
 
 
@@ -111,11 +111,11 @@ public class Metronome : INotifyPropertyChanged
 
     private void SelectSoundAndPlay()
     {
-        var player = SelectSoundForPlayer();
+        var player = CreatePlayerByCurrentFaze();
         player.Play();
     }
 
-    private SoundPlayer SelectSoundForPlayer()
+    private SoundPlayer CreatePlayerByCurrentFaze()
     {
         var player = CurrentFaze == 1
             ? new SoundPlayer(Properties.Resources.HighMetronomeSound)
