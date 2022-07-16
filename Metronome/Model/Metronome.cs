@@ -50,7 +50,7 @@ public class Metronome : INotifyPropertyChanged
 
     private void UpdateTimerInterval()
     {
-        int millisecondsInMinute = 60000;
+        const int millisecondsInMinute = 60000;
         _timer.Interval = (double)millisecondsInMinute / _bpm;
     }
 
