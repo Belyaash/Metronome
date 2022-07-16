@@ -25,7 +25,7 @@ public class Metronome : INotifyPropertyChanged
         _timer.Elapsed += MetronomeWork;
     }
 
-    private Timer _timer = new();
+    private readonly Timer _timer = new();
 
     private int _bpm;
 
@@ -85,20 +85,12 @@ public class Metronome : INotifyPropertyChanged
         }
     }
 
-    public void MetronomeWork(object source, ElapsedEventArgs e)
+    private void MetronomeWork(object source, ElapsedEventArgs e)
     {
-        SoundPlayer player;
-         CurrentFaze++;
-        if (CurrentFaze == 1)
-        {
-            player = new SoundPlayer(Properties.Resources.HighMetronomeSound);
-            player.Play();
-        }
-        else
-        {
-            player = new SoundPlayer(Properties.Resources.LowMetronomeSound);
-            player.Play();
-        }
+        CurrentFaze++;
+        SoundPlayer player = CurrentFaze == 1 ? new SoundPlayer(Properties.Resources.HighMetronomeSound) 
+            : new SoundPlayer(Properties.Resources.LowMetronomeSound);
+        player.Play();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
