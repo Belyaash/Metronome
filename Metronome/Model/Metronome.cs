@@ -18,13 +18,11 @@ public class Metronome : INotifyPropertyChanged, IMetronome
     #region Variables
 
     private readonly Timer _timer = new();
-
     private bool _isWorking;
 
-    private int _bpm;
     public int Bpm
     {
-        get => _bpm;
+        get => Properties.Settings.Default.MetronomeBpm;
         set
         {
             SetBpmInRange(value);
@@ -33,14 +31,15 @@ public class Metronome : INotifyPropertyChanged, IMetronome
         }
     }
 
-    private void SetBpmInRange(int value)
+    private static void SetBpmInRange(int value)
     {
-        _bpm = value switch
+        Properties.Settings.Default.MetronomeBpm = value switch
         {
             < 1 => 1,
             > 300 => 300,
             _ => value
         };
+        Properties.Settings.Default.Save();
     }
 
     private void SetTimerInterval()
@@ -49,16 +48,17 @@ public class Metronome : INotifyPropertyChanged, IMetronome
         _timer.Interval = (double)millisecondsInMinute/Bpm;
     }
 
-    private int _currentMeasure;
     public int CurrentMeasure
     {
-        get => _currentMeasure;
+        get => Properties.Settings.Default.MetronomeMeasure;
         set
         {
-            _currentMeasure = value;
+            Properties.Settings.Default.MetronomeMeasure = value;
+            Properties.Settings.Default.Save();
             OnPropertyChanged(nameof(CurrentMeasure));
         }
     }
+
 
     private int _currentFaze;
     public int CurrentFaze
@@ -73,10 +73,10 @@ public class Metronome : INotifyPropertyChanged, IMetronome
 
     #endregion
 
-    public Metronome(int bpm, int currentMeasure)
+    public Metronome()
     {
-        Bpm = bpm;
-        CurrentMeasure = currentMeasure;
+        Bpm = Properties.Settings.Default.MetronomeBpm;
+        CurrentMeasure = Properties.Settings.Default.MetronomeMeasure;
         CurrentFaze = 0;
         _isWorking = false;
         _timer.AutoReset = true;

@@ -21,7 +21,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public MainWindowViewModel()
     {
         InitCommands();
-        Metronome = new Model.Metronome(90, 2);
+        Metronome = new Model.Metronome();
         MeasuresList = new List<int>();
         for (int i = 1; i <= 8; i++)
         {
