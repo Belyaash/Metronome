@@ -111,9 +111,9 @@ public class Metronome : INotifyPropertyChanged, IMetronome
         StartOrStopTimer(_isWorking);
     }
 
-    private void StartOrStopTimer(bool value)
+    private void StartOrStopTimer(bool isWorking)
     {
-        if (value)
+        if (isWorking)
             _timer.Start();
         else
             _timer.Stop();
