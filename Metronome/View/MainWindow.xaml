@@ -8,7 +8,7 @@
         Title="Metronome" Height="200" Width="300"
         MinHeight="200" MaxHeight="200"
         MinWidth="300" MaxWidth ="300"
-        Background="#D7FDEC">
+        Background="Wheat">
 
     <Window.DataContext>
         <local:MainWindowViewModel></local:MainWindowViewModel>

@@ -18,7 +18,6 @@ public class Metronome : INotifyPropertyChanged, IMetronome
     #region Variables
 
     private readonly Timer _timer = new();
-    private bool _isWorking;
 
     public int Bpm
     {
@@ -35,7 +34,7 @@ public class Metronome : INotifyPropertyChanged, IMetronome
     {
         Properties.Settings.Default.MetronomeBpm = value switch
         {
-            < 1 => 1,
+            < 10 => 10,
             > 300 => 300,
             _ => value
         };
@@ -78,7 +77,6 @@ public class Metronome : INotifyPropertyChanged, IMetronome
         Bpm = Properties.Settings.Default.MetronomeBpm;
         CurrentMeasure = Properties.Settings.Default.MetronomeMeasure;
         CurrentFaze = 0;
-        _isWorking = false;
         _timer.AutoReset = true;
         _timer.Enabled = false;
         _timer.Elapsed += MetronomeWork;
@@ -92,31 +90,15 @@ public class Metronome : INotifyPropertyChanged, IMetronome
 
     private void CreatePlayerAndPlay()
     {
-        var player = CreatePlayerByCurrentFaze();
-        player.Play();
-    }
-
-    private SoundPlayer CreatePlayerByCurrentFaze()
-    {
         var player = CurrentFaze == 1
             ? new SoundPlayer(Properties.Resources.HighMetronomeSound)
             : new SoundPlayer(Properties.Resources.LowMetronomeSound);
-        return player;
+        player.Play();
     }
-
 
     public void StartOrStopMetronome()
     {
-        _isWorking = !_isWorking;
-        StartOrStopTimer(_isWorking);
-    }
-
-    private void StartOrStopTimer(bool isWorking)
-    {
-        if (isWorking)
-            _timer.Start();
-        else
-            _timer.Stop();
+       _timer.Enabled = !_timer.Enabled;
     }
 
 
